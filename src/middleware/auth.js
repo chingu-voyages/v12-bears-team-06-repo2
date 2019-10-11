@@ -6,6 +6,8 @@ const auth = async (req, res, next) => {
     let token = '';
     if(req.body.token) {
       token = req.body.token;
+    } else if (req.headers.authorization) {
+      token = req.headers.authorization;
     } else {
       token = req.cookies.token;
     }
