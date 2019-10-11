@@ -18,7 +18,7 @@ router.post('/users', async (req, res) => {
     res.cookie('token', token);
     res.send(token);
   } catch (err) {
-    res.status(400);
+    res.status(400).send(err);
   }
 });
 
@@ -40,7 +40,7 @@ router.post('/users/logout', auth, async (req, res) => {
     });
     await req.user.save();
     res.clearCookie('token');
-    res.status(200);
+    res.status(200).send();
   } catch(err) {
     res.status(500).send(err);
   }
