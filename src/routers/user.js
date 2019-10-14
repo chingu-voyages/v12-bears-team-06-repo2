@@ -1,5 +1,4 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
 const multer = require('multer');
 const sharp = require('sharp');
 const User = require('../models/user');
@@ -30,8 +29,9 @@ router.post('/users', async (req, res) => {
   try {
     await user.save();
     const token = await user.generateAuthToken();
-    const data = [user, token];
-    res.cookie('token', token);
+    const refreshToken = await user.generateRefreshToken();
+    const data = token;
+    res.cookie('refreshToken', refreshToken, {httpOnly: true});
     res.send({token: token});
   } catch (err) {
     res.status(400).send(err);
@@ -42,7 +42,8 @@ router.post('/users/login', async (req, res) => {
   try {
     const user = await User.findByCredentials(req.body.email, req.body.password);
     const token = await user.generateAuthToken();
-    res.cookie('token', token);
+    const refreshToken = await user.generateRefreshToken();
+    res.cookie('refreshToken', refreshToken,  {httpOnly: true});
     res.send({token: token});
   } catch(err) {
     res.status(400).send('Incorrect username or password.');
@@ -54,8 +55,11 @@ router.post('/users/logout', auth, async (req, res) => {
     req.user.tokens = req.user.tokens.filter((token) => {
       return token.token !== req.token;
     });
+    req.user.refreshTokens = req.user.refreshTokens.filter((refreshToken) => {
+      return refreshToken.refreshToken !== req.refreshToken;
+    });
     await req.user.save();
-    res.clearCookie('token');
+    res.clearCookie('refreshToken');
     res.status(200).send();
   } catch(err) {
     res.status(500).send(err);
