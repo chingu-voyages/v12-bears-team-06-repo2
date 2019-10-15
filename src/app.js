@@ -4,6 +4,7 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const userRouter = require('./routers/user');
+const destinationRouter = require('./routers/destination');
 
 const app = express();
 
@@ -13,6 +14,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 app.use(userRouter);
+app.use(destinationRouter);
 
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
