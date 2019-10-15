@@ -40,6 +40,12 @@ const userSchema = new mongoose.Schema({
       required: true
     }
   }],
+  refreshTokens: [{
+    refreshToken: {
+      type: String,
+      required: true
+    }
+  }],
   avatar: {
     type: Buffer
   }
@@ -49,10 +55,18 @@ const userSchema = new mongoose.Schema({
 
 userSchema.methods.generateAuthToken = async function() {
   const user = this;
-  const token = jwt.sign({_id: user._id.toString()}, process.env.SECRET, {expiresIn: '7d'});
+  const token = jwt.sign({_id: user._id.toString()}, process.env.SECRET, {expiresIn: 900000});
   user.tokens = user.tokens.concat({token});
   await user.save();
   return token;
+};
+
+userSchema.methods.generateRefreshToken = async function() {
+  const user = this;
+  const refreshToken = jwt.sign({_id: user._id.toString()}, process.env.REFRESH_SECRET, {expiresIn: '5d'});
+  user.refreshTokens = user.refreshTokens.concat({refreshToken});
+  await user.save();
+  return refreshToken;
 };
 
 userSchema.statics.findByCredentials = async(email, password) => {
