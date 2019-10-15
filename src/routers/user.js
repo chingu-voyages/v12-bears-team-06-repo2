@@ -34,6 +34,7 @@ router.post('/users', async (req, res) => {
     res.cookie('refreshToken', refreshToken, {httpOnly: true});
     res.send({token: token});
   } catch (err) {
+    console.log(err);
     res.status(400).send(err);
   }
 });
@@ -46,6 +47,7 @@ router.post('/users/login', async (req, res) => {
     res.cookie('refreshToken', refreshToken,  {httpOnly: true});
     res.send({token: token});
   } catch(err) {
+    console.log(err);
     res.status(400).send('Incorrect username or password.');
   }
 });
@@ -111,6 +113,10 @@ router.delete('/users/me/avatar', auth, async (req,res) => {
   req.user.avatar = undefined;
   await req.user.save();
   res.send();
+});
+
+router.post('/auth', auth, (req, res) => {
+  res.status(200).send('User is authenticated.');
 });
 
 module.exports = router;

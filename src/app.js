@@ -18,7 +18,7 @@ mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
-});
+}).catch(error => console.log('Could not make a connection to the database'));
 
 app.listen(process.env.PORT, () => {
   console.log('Server started on port ' + process.env.PORT);
