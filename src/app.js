@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const userRouter = require('./routers/user');
-const weatherRouter = require('./routers/weather');
+const destinationRouter = require('./routers/destination');
 
 const app = express();
 
@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
 app.use(userRouter);
-app.use(weatherRouter);
+app.use(destinationRouter);
 
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,

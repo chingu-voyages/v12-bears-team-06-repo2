@@ -1,7 +1,7 @@
 require('dotenv').config({path: '../.env'});
 const fetch = require('node-fetch');
 
-function geocode(address, callback) {
+const geocode = (address, callback) => {
   const url = `https://eu1.locationiq.com/v1/search.php?key=${process.env.GEOCODE_API_KEY}&q=${encodeURIComponent(address)}&format=json&limit=1`;
   fetch(url)
     .then(res => res.json())
@@ -11,7 +11,7 @@ function geocode(address, callback) {
       location: json[0].display_name
       })
     )
-    .catch(err => callback('Something went wrong.', undefined));
-}
+    .catch(err => callback('Could not get location data.', undefined));
+};
 
 module.exports = geocode;

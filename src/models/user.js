@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     minlength: 7,
     trim: true,
-    rewuired: true,
+    required: true,
   },
   tokens: [{
     token: {
@@ -42,6 +42,9 @@ const userSchema = new mongoose.Schema({
   }],
   avatar: {
     type: Buffer
+  },
+  destination: {
+    type: String
   }
 }, {
   timestamps: true

@@ -4,13 +4,14 @@ const forecast = require('../utils/forecast');
 
 const router = new express.Router();
 
-router.get('/weather', (req, res) => {
+router.get('/destination', (req, res) => {
   try {
     if(!req.query.address) {
       return res.status(400).send({
         error: 'You must provide an address.'
       });
     }
+    // add request to map api & attractions api here
     geocode(req.query.address, (error, {latitude, longitude, location}) => {
       if (error) {
         return res.status(400).send({err});
@@ -28,7 +29,6 @@ router.get('/weather', (req, res) => {
   } catch (err) {
     res.status(400).send(err);
   }
-
 });
 
 module.exports = router;

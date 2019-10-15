@@ -19,7 +19,7 @@ const forecast = (latitude, longitude, callback) => {
       callback(undefined, forecast);
     }
     )
-    .catch(err => callback('Something went wrong.', undefined));
+    .catch(err => callback('Could not get weather data.', undefined));
   };
 
 module.exports = forecast;
