@@ -77,14 +77,24 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req,res) =
   res.status(400).send(err);
 });
 
-router.get('/users/:id/avatar', async (req, res) => {
+router.get('/users/me/avatar', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if(!user || !user.avatar) {
+    if(!req.user.avatar) {
       throw new Error();
     }
     res.set('Content-Type', 'image/png');
-    res.send(user.avatar);
+    res.send(req.user.avatar);
+  } catch(err) {
+    res.status(400).send();
+  }
+});
+
+router.get('/users/me/destination', auth, async (req, res) => {
+  try {
+    if(!req.user.destination) {
+      throw new Error();
+    }
+    res.send({destination: req.user.destination});
   } catch(err) {
     res.status(400).send();
   }
@@ -95,7 +105,7 @@ router.patch('/users/me', auth, async (req, res) => {
   const updates = body.filter(value => {
     return value !== 'token';
   });
-  const allowedUpdates = ['username', 'email', 'password', 'avatar'];
+  const allowedUpdates = ['username', 'email', 'password', 'avatar', 'destination'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
   if(!isValidOperation) {
     return res.status(400).send('Invalid updates!');
@@ -108,6 +118,7 @@ router.patch('/users/me', auth, async (req, res) => {
     res.status(400).send(err);
   }
 });
+
 
 router.delete('/users/me/avatar', auth, async (req,res) => {
   req.user.avatar = undefined;
