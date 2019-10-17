@@ -32,7 +32,7 @@ router.post('/users/register', async (req, res) => {
     const refreshToken = await user.generateRefreshToken();
     const data = token;
     res.cookie('refreshToken', refreshToken, {httpOnly: true});
-    res.send({token: token});
+    res.send({username: req.body.username, token: token});
   } catch (err) {
     console.log(err);
     res.status(400).send(err);
@@ -45,7 +45,7 @@ router.post('/users/login', async (req, res) => {
     const token = await user.generateAuthToken();
     const refreshToken = await user.generateRefreshToken();
     res.cookie('refreshToken', refreshToken,  {httpOnly: true});
-    res.send({token: token});
+    res.send({username: user.username, token: token});
   } catch(err) {
     console.log(err);
     res.status(400).send('Incorrect username or password.');
@@ -65,6 +65,7 @@ router.post('/users/logout', auth, async (req, res) => {
     res.status(200).send();
   } catch(err) {
     res.status(500).send(err);
+    console.log(err);
   }
 });
 
@@ -126,8 +127,8 @@ router.delete('/users/me/avatar', auth, async (req,res) => {
   res.send();
 });
 
-router.post('/auth', auth, (req, res) => {
-  res.status(200).send('User is authenticated.');
+router.get('/auth', auth, (req, res) => {
+  res.status(200).send({user: req.user.username});
 });
 
 module.exports = router;
