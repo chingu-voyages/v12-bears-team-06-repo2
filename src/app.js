@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const userRouter = require('./routers/user');
 const destinationRouter = require('./routers/destination');
+const todosRouter = require("./routers/todos");
+
 
 const app = express();
 
@@ -15,11 +17,13 @@ app.use(cookieParser());
 
 app.use(userRouter);
 app.use(destinationRouter);
+app.use("/todolist", todosRouter);
 
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useCreateIndex: true,
+  useFindAndModify: false
 }).catch(error => console.log('Could not make a connection to the database'));
 
 app.listen(process.env.PORT, () => {

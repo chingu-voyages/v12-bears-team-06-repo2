@@ -4,6 +4,8 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+var TodoList = require("./todos");
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -51,8 +53,13 @@ const userSchema = new mongoose.Schema({
   },
   destination: {
     type: String
-  }
-}, {
+  },
+  todoList: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "TodoList"
+    }
+  ]}, {
   timestamps: true
 });
 
