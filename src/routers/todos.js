@@ -5,7 +5,7 @@ var user = require("../models/user");
 var auth = require("../middleware/auth");
 
 //show all todos
-router.get("/", function(req, res) {
+router.get("/", auth, function(req, res) {
     var perPage = 10;
 	var pageQuery = parseInt(req.query.page);
 	var pageNumber = pageQuery ? pageQuery : 1;
@@ -15,20 +15,22 @@ router.get("/", function(req, res) {
             if (err) {
                 console.log(err.message);
             } else {
-                res.render("dashboard/todolist", {
-                    todolists: allTodoList,
-                    current: pageNumber,
-                    pages: Math.ceil(count / perPage)
-                });
+                //you can uncomment this for after connecting the back end and front end
+                // res.render("dashboard/todolist", {
+                //     todolists: allTodoList,
+                //     current: pageNumber,
+                //     pages: Math.ceil(count / perPage)
+                // });
 
-                // res.send(allTodoList);
+                //this is for postman
+                res.send(allTodoList);
             }
         });
     });
 });
 
 //create new todolist to the db
-router.post("/add", function(req, res) {
+router.post("/add", auth, function(req, res) {
     var taskDescription = req.body.taskDescription;
     var taskDone = req.body.taskDone;
 
@@ -45,19 +47,21 @@ router.post("/add", function(req, res) {
 });
 
 //NEW - show form to create new todolist
-router.get("/add", function(req, res){
+router.get("/add", auth, function(req, res){
+    
+    //this is for render the form create new todo list
     res.render("todolist/new"); 
  });
  
  //EDIT - show form to edit todolist
- router.get("/:id/edit", function(req, res) {
+ router.get("/:id/edit", auth, function(req, res) {
      TodoList.findById(req.params.id, function(err, foundTodoList){
          res.render("todolist/edit", {todolists: foundTodoList});
      });
  });
  
  //UPDATE - logic to edit todolist
- router.put("/:id", function(req, res) {
+ router.put("/:id", auth, function(req, res) {
      //find and update the correct todolist
      TodoList.findByIdAndUpdate(req.params.id, {taskDescription: req.body.taskDescription, taskDone: req.body.taskDone}, {new: true}, function(err, foundTodoList) {
         if(err){
@@ -71,7 +75,7 @@ router.get("/add", function(req, res){
  });
  
  //destroy
- router.delete("/:id", function (req, res) {
+ router.delete("/:id", auth, function (req, res) {
      TodoList.findById(req.params.id, function (err, todolist) {
          if (err) {
              console.log(err);
