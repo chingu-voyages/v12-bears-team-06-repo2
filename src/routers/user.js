@@ -83,8 +83,8 @@ router.get('/users/me/avatar', auth, async (req, res) => {
     if(!req.user.avatar) {
       throw new Error();
     }
-    res.set('Content-Type', 'image/png');
-    res.send(req.user.avatar);
+    const img = req.user.avatar.toString('base64');
+    res.send(img);
   } catch(err) {
     res.status(400).send();
   }
@@ -119,7 +119,6 @@ router.patch('/users/me', auth, async (req, res) => {
     res.status(400).send(err);
   }
 });
-
 
 router.delete('/users/me/avatar', auth, async (req,res) => {
   req.user.avatar = undefined;
