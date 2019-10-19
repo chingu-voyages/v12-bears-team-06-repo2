@@ -15,14 +15,6 @@ router.get("/", auth, function(req, res) {
             if (err) {
                 console.log(err.message);
             } else {
-                //you can uncomment this for after connecting the back end and front end
-                // res.render("dashboard/todolist", {
-                //     todolists: allTodoList,
-                //     current: pageNumber,
-                //     pages: Math.ceil(count / perPage)
-                // });
-
-                //this is for postman
                 res.send(allTodoList);
             }
         });
@@ -36,59 +28,55 @@ router.post("/add", auth, function(req, res) {
 
     var newTodoList = { taskDescription: taskDescription, taskDone: taskDone };
 
-    TodoList.create(newTodoList, function(err, TodoList) {
+    TodoList.create(newTodoList, function(err, createTodoList) {
         if (err) {
             console.log(err);
         } else {
-            console.log(TodoList);
-            res.redirect("/board");
+            console.log(createTodoList);
+            res.send(createTodoList)
         }
     });
 });
 
 //NEW - show form to create new todolist
-router.get("/add", auth, function(req, res){
+// router.get("/add", auth, function(req, res){
     
     //this is for render the form create new todo list
-    res.render("todolist/new"); 
- });
+//     res.send("todolist/new"); 
+//  });
  
  //EDIT - show form to edit todolist
- router.get("/:id/edit", auth, function(req, res) {
-     TodoList.findById(req.params.id, function(err, foundTodoList){
-         res.render("todolist/edit", {todolists: foundTodoList});
-     });
- });
+//  router.get("/:id/edit", auth, function(req, res) {
+//      TodoList.findById(req.params.id, function(err, foundTodoList){
+        //  res.render("todolist/edit", {todolists: foundTodoList});
+//      });
+//  });
  
  //UPDATE - logic to edit todolist
  router.put("/:id", auth, function(req, res) {
      //find and update the correct todolist
-     TodoList.findByIdAndUpdate(req.params.id, {taskDescription: req.body.taskDescription, taskDone: req.body.taskDone}, {new: true}, function(err, foundTodoList) {
+     TodoList.findByIdAndUpdate(req.params.id, {taskDescription: req.body.taskDescription, taskDone: req.body.taskDone}, {new: true}, function(err, updatedTodoList) {
         if(err){
-            console.log(err);
-            res.redirect("/board");
+            console.log(err);;
         } else {
-            console.log(foundTodoList);
-            res.redirect("/todolist/" + req.params.id);
+            console.log(updatedTodoList);
+            res.send(updatedTodoList);
         }
      });
  });
  
  //destroy
  router.delete("/:id", auth, function (req, res) {
-     TodoList.findById(req.params.id, function (err, todolist) {
+     TodoList.findById(req.params.id, function (err, foundTodoList) {
          if (err) {
              console.log(err);
-             res.redirect("/board");
          } else {
              TodoList.remove({"_id": {$in: user.todolists}}, function(err) {
                 if (err) {
                     console.log(err);
-                    return res.redirect("/board");
                 }
-                todolist.remove();
+                foundTodoList.remove();
                 console.log("Todolist deleted successfully!");
-                res.redirect("/board");
              });
          }
      });
