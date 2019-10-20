@@ -10,6 +10,13 @@ var todoListSchema = new mongoose.Schema ({
     taskDone: {
         type: Boolean,
         default: false
+    },
+    author: {
+        id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        },
+        username: String
     }
 });
 
