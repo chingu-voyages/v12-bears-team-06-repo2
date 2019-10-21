@@ -54,12 +54,7 @@ const userSchema = new mongoose.Schema({
   destination: {
     type: String
   },
-  todoList: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "TodoList"
-    }
-  ]}, {
+}, {
   timestamps: true
 });
 

@@ -6,23 +6,13 @@ var auth = require("../middleware/auth");
 
 //show all todos
 router.get("/", auth, function(req, res) {
-    var perPage = 10;
-	var pageQuery = parseInt(req.query.page);
-	var pageNumber = pageQuery ? pageQuery : 1;
-    
-    
-    TodoList.find({}).skip((perPage * pageNumber) - perPage).limit(perPage).exec(function(err, allTodoList){
-        TodoList.countDocuments().exec(function(err, count) {
-            if (err) {
-                console.log(err.message);
-            } else {
-                // if(req.user._id === ) {
-                    res.send(allTodoList);
-                // } else {
-                    // res.send("empty");
-                // }
-            }
-        });
+    TodoList.find({'author.id': req.user._id}).exec(function(err, allTodoList){
+        if (err) {
+            console.log(err.message);
+        } else {
+            // console.log(allTodoList);
+            res.send(allTodoList);
+        }
     });
 });
 
@@ -30,9 +20,15 @@ router.get("/", auth, function(req, res) {
 router.post("/add", auth, function(req, res) {
     var taskDescription = req.body.taskDescription;
     var taskDone = req.body.taskDone;
+    var author = {
+        id: req.user._id,
+        username: req.user.username
+    }
 
-    var newTodoList = { taskDescription: taskDescription, taskDone: taskDone };
+    var newTodoList = { taskDescription: taskDescription, taskDone: taskDone, author: author };
 
+    console.log(author.id);
+    console.log(author.username);
     TodoList.create(newTodoList, function(err, createTodoList) {
         if (err) {
             console.log(err);
@@ -62,12 +58,13 @@ router.post("/add", auth, function(req, res) {
          if (err) {
              console.log(err);
          } else {
-             TodoList.remove({"_id": {$in: user.todolists}}, function(err) {
+             TodoList.remove({"_id": {$in: User.todolists}}, function(err) {
                 if (err) {
                     console.log(err);
                 }
                 foundTodoList.remove();
                 console.log("Todolist deleted successfully!");
+                res.send("Todolist deleted successfully!").status(200);
              });
          }
      });
