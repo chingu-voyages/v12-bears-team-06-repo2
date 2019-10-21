@@ -100,6 +100,16 @@ router.get('/users/me/destination', auth, async (req, res) => {
   }
 });
 
+router.delete('/users/me/destination', auth, async (req, res) => {
+  try {
+    req.user.destination = undefined;
+    await req.user.save();
+    res.send();
+  } catch(err) {
+    res.status(400).send();
+  }
+});
+
 router.patch('/users/me', auth, async (req, res) => {
   const body = Object.keys(req.body);
   const updates = body.filter(value => {
@@ -121,9 +131,13 @@ router.patch('/users/me', auth, async (req, res) => {
 
 
 router.delete('/users/me/avatar', auth, async (req,res) => {
-  req.user.avatar = undefined;
-  await req.user.save();
-  res.send();
+  try{
+    req.user.avatar = undefined;
+    await req.user.save();
+    res.status(200).send();
+  } catch (err) {
+    res.status(400).send(err);
+  }
 });
 
 router.post('/auth', auth, (req, res) => {
