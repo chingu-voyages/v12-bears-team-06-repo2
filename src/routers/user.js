@@ -81,7 +81,7 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req,res) =
 router.get('/users/me/avatar', auth, async (req, res) => {
   try {
     if(!req.user.avatar) {
-      throw new Error();
+      return res.send();
     }
     const img = req.user.avatar.toString('base64');
     res.send(img);
@@ -93,7 +93,7 @@ router.get('/users/me/avatar', auth, async (req, res) => {
 router.get('/users/me/destination', auth, async (req, res) => {
   try {
     if(!req.user.destination) {
-      throw new Error();
+      return res.send();
     }
     res.send({destination: req.user.destination});
   } catch(err) {
@@ -105,7 +105,7 @@ router.post('/users/me/date', auth, async (req, res) => {
   try {
     req.user.date = req.body.date;
     await req.user.save();
-    res.status(200).send(req.user.date);
+    res.status(200).send({date: req.user.date});
   } catch(err) {
     res.status(400).send();
   }
@@ -114,7 +114,7 @@ router.post('/users/me/date', auth, async (req, res) => {
 router.get('/users/me/date', auth, async (req, res) => {
   try {
     if(!req.user.date) {
-      throw new Error();
+      return res.send();
     }
     res.send({date: req.user.date});
   } catch(err) {
