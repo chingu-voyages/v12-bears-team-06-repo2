@@ -101,6 +101,27 @@ router.get('/users/me/destination', auth, async (req, res) => {
   }
 });
 
+router.post('/users/me/date', auth, async (req, res) => {
+  try {
+    req.user.date = req.body.date;
+    await req.user.save();
+    res.status(200).send(req.user.date);
+  } catch(err) {
+    res.status(400).send();
+  }
+});
+
+router.get('/users/me/date', auth, async (req, res) => {
+  try {
+    if(!req.user.date) {
+      throw new Error();
+    }
+    res.send({date: req.user.date});
+  } catch(err) {
+    res.status(400).send();
+  }
+});
+
 router.patch('/users/me', auth, async (req, res) => {
   const body = Object.keys(req.body);
   const updates = body.filter(value => {
