@@ -51,6 +51,9 @@ const userSchema = new mongoose.Schema({
   },
   destination: {
     type: String
+  },
+  date: {
+    type: String
   }
 }, {
   timestamps: true
