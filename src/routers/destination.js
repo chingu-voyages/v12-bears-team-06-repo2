@@ -12,6 +12,10 @@ router.get('/destination', auth, async (req, res) => {
       });
     }
 
+    if(req.query.address === 'undefined') {
+      return res.send();
+    }
+
     if(req.user.destination !== req.query.address){
       req.user.destination = req.query.address;
       await req.user.save();
