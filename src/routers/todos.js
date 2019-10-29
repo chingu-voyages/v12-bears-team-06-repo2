@@ -65,7 +65,7 @@ router.post("/add", auth, function(req, res) {
             //  console.log(err);
             return res.status(400).send({err});
          } else {
-             TodoList.remove({"_id": {$in: User.todolists}}, function(err) {
+             TodoList.deleteOne({"_id": {$in: User.todolists}}, function(err) {
                 if (err) {
                     // console.log(err);
                     return res.status(400).send({err});
