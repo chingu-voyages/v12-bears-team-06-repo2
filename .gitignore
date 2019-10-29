@@ -1,5 +1,4 @@
-node_modules
-
 .env
-
+.jshintrc
+node_module
 package-lock.json

@@ -20,7 +20,7 @@ const upload = multer({
   }
 });
 
-router.post('/users', async (req, res) => {
+router.post('/users/register', async (req, res) => {
   const user = new User({
     username: req.body.username,
     email: req.body.email,
@@ -32,7 +32,7 @@ router.post('/users', async (req, res) => {
     const refreshToken = await user.generateRefreshToken();
     const data = token;
     res.cookie('refreshToken', refreshToken, {httpOnly: true});
-    res.send({token: token});
+    res.send({username: req.body.username, token: token});
   } catch (err) {
     console.log(err);
     res.status(400).send(err);
@@ -41,11 +41,12 @@ router.post('/users', async (req, res) => {
 
 router.post('/users/login', async (req, res) => {
   try {
-    const user = await User.findByCredentials(req.body.email, req.body.password);
+    const email = req.body.email.toLowerCase();
+    const user = await User.findByCredentials(email, req.body.password);
     const token = await user.generateAuthToken();
     const refreshToken = await user.generateRefreshToken();
     res.cookie('refreshToken', refreshToken,  {httpOnly: true});
-    res.send({token: token});
+    res.send({username: user.username, token: token});
   } catch(err) {
     console.log(err);
     res.status(400).send('Incorrect username or password.');
@@ -65,6 +66,7 @@ router.post('/users/logout', auth, async (req, res) => {
     res.status(200).send();
   } catch(err) {
     res.status(500).send(err);
+    console.log(err);
   }
 });
 
@@ -77,14 +79,56 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req,res) =
   res.status(400).send(err);
 });
 
-router.get('/users/:id/avatar', async (req, res) => {
+router.get('/users/me/avatar', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.params.id);
-    if(!user || !user.avatar) {
-      throw new Error();
+    if(!req.user.avatar) {
+      return res.send();
     }
-    res.set('Content-Type', 'image/png');
-    res.send(user.avatar);
+    const img = req.user.avatar.toString('base64');
+    res.send(img);
+  } catch(err) {
+    res.status(400).send();
+  }
+});
+
+router.get('/users/me/destination', auth, async (req, res) => {
+  try {
+    if(!req.user.destination) {
+      return res.send();
+    }
+    res.send({destination: req.user.destination});
+  } catch(err) {
+    res.status(400).send();
+  }
+});
+
+router.post('/users/me/date', auth, async (req, res) => {
+  try {
+    req.user.date = req.body.date;
+    await req.user.save();
+    res.status(200).send({date: req.user.date});
+  } catch(err) {
+    res.status(400).send();
+  }
+});
+
+router.get('/users/me/date', auth, async (req, res) => {
+  try {
+    if(!req.user.date) {
+      return res.send();
+    }
+    res.send({date: req.user.date});
+  } catch(err) {
+    res.status(400).send();
+  }
+});
+
+router.delete('/users/me/destination', auth, async (req, res) => {
+  try {
+    req.user.destination = undefined;
+    req.user.date = undefined;
+    await req.user.save();
+    res.send();
   } catch(err) {
     res.status(400).send();
   }
@@ -95,7 +139,7 @@ router.patch('/users/me', auth, async (req, res) => {
   const updates = body.filter(value => {
     return value !== 'token';
   });
-  const allowedUpdates = ['username', 'email', 'password', 'avatar'];
+  const allowedUpdates = ['username', 'email', 'password', 'avatar', 'destination'];
   const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
   if(!isValidOperation) {
     return res.status(400).send('Invalid updates!');
@@ -110,13 +154,17 @@ router.patch('/users/me', auth, async (req, res) => {
 });
 
 router.delete('/users/me/avatar', auth, async (req,res) => {
-  req.user.avatar = undefined;
-  await req.user.save();
-  res.send();
+  try{
+    req.user.avatar = undefined;
+    await req.user.save();
+    res.status(200).send();
+  } catch (err) {
+    res.status(400).send(err);
+  }
 });
 
-router.post('/auth', auth, (req, res) => {
-  res.status(200).send('User is authenticated.');
+router.get('/auth', auth, (req, res) => {
+  res.status(200).send({user: req.user.username});
 });
 
 module.exports = router;
