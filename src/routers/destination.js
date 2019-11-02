@@ -61,6 +61,8 @@ router.get('/destination', auth, async (req, res) => {
                 }
                   res.send({
                     location: data.location,
+                    latitude: data.latitude,
+                    longitude: data.longitude,
                     forecast: forecast,
                     attractions: attractions
                   });
