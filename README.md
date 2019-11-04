@@ -28,7 +28,7 @@ See the project in action [here](https://travel-planning-app.netlify.com/).
 - Run `npm install` in your command line
 - Create a `.env` file in the root directory and add your MongoDB URL, PORT 3001 and your API keys
 - Run `npm start` in your command line
-- Visit http://localhost:3000 in your browser
+- Visit http://localhost:3001 in your browser
 
 ## Tech stack
 - React
