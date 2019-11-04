@@ -53,11 +53,14 @@ router.get('/destination', auth, async (req, res) => {
               .then(res => res.json())
               .then(json => {
                 let attractions = [];
+                console.log(json.data.places[1].location.lat);
                 for (let i = 0; i < 10; i++) {
                   const name = json.data.places[i].name;
                   const img = json.data.places[i].thumbnail_url;
                   const url = json.data.places[i].url;
-                  attractions.push({name, img, url});
+                  const lat = json.data.places[i].location.lat;
+                  const long = json.data.places[i].location.lng;
+                  attractions.push({name, img, url, lat, long});
                 }
                   res.send({
                     location: data.location,
