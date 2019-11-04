@@ -1,14 +1,14 @@
 # Travel Planning App (backend)
 
 ## Overview
-This is the backend repository for a travel planning app created during the Chingu Voyage 12.
+This is the backend repository for a travel planning app created during the Chingu Voyage 12.<br>
 Check out the frontend repository [here]( https://github.com/chingu-voyages/v12-bears-team-06).<br>
 See the project in action [here](https://travel-planning-app.netlify.com/).
 
 ## Team Members
-[Yuri]( https://github.com/chocolat5)
-[Leony]( https://github.com/leonyangela)
-[Josy]( https://github.com/jh1408)
+[Yuri]( https://github.com/chocolat5)<br>
+[Leony]( https://github.com/leonyangela)<br>
+[Josy]( https://github.com/jh1408)<br>
 
 ## Features
 -	Create a user account to get started
@@ -28,7 +28,7 @@ See the project in action [here](https://travel-planning-app.netlify.com/).
 - Run `npm install` in your command line
 - Create a `.env` file in the root directory and add your MongoDB URL, PORT 3001 and your API keys
 - Run `npm start` in your command line
-- Visit http://localhost:3001 in your browser
+- Visit http://localhost:3000 in your browser
 
 ## Tech stack
 - React
