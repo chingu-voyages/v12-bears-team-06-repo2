@@ -53,7 +53,6 @@ router.get('/destination', auth, async (req, res) => {
               .then(res => res.json())
               .then(json => {
                 let attractions = [];
-                console.log(json.data.places[1].location.lat);
                 for (let i = 0; i < 10; i++) {
                   const name = json.data.places[i].name;
                   const img = json.data.places[i].thumbnail_url;
